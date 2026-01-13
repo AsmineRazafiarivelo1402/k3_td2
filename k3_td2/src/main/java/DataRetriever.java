@@ -62,4 +62,38 @@ public class DataRetriever {
         }
        return  team;
     }
+    //List<Player> findPlayers(int page, int size) permettant de récupérer la liste
+    //des joueurs à travers une pagination.
+    public List<Player> findPlayers(int page, int size){
+        String playerSQL = "SELECT PLAYER.id,PLAYER.name,PLAYER.age,PLAYER.position,PLAYER.id_team, T.id, T.name, T.continent from PLAYER inner join TEAM T on PLAYER.id_team = T.id LIMIT ? OFFSET ?";
+        List<Player> listPlayers = new ArrayList<>();
+        List<Player> players = new ArrayList<>();
+        try(Connection connection = DriverManager.getConnection(dbConnection.getJdbcURL(), dbConnection.getUsername(),dbConnection.getPassword());
+             PreparedStatement psPlayer = connection.prepareStatement(playerSQL);
+        ){
+            psPlayer.setInt(1,size);
+            psPlayer.setInt(2,page);
+            ResultSet rsPlayer = psPlayer.executeQuery();
+            while (rsPlayer.next()){
+                Team team = new Team(
+                        rsPlayer.getInt("id_team"),
+                        rsPlayer.getString("name"),
+                        ContinentEnum.valueOf(rsPlayer.getString("continent")),
+                        players
+                );
+                Player player = new Player(
+                        rsPlayer.getInt("id"),
+                        rsPlayer.getString("name"),
+                        rsPlayer.getInt("age"),
+                        PlayerPositionEnum.valueOf(rsPlayer.getString("position")) ,
+                        team
+                );
+                listPlayers.add(player);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return listPlayers;
+    }
 }

@@ -2,6 +2,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 import model.Player;
 import model.Team;
 
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.load();
@@ -17,6 +19,11 @@ public class Main {
                             + " | Age: " + player.getAge()
                             + " | Position: " + player.getPosition_enum()
             );
+        }
+        List<Player> players = dataRetriever.findPlayers(1,3);
+        for(Player player : players){
+            System.out.println(player.getName());
+
         }
 
 
