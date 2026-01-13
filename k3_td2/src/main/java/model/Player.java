@@ -8,7 +8,7 @@ public class Player {
     private PlayerPositionEnum position_enum;
     private Team team;
 
-    public Player(int age, int id, String name, PlayerPositionEnum position_enum, Team team) {
+    public Player( int id, String name,int age, PlayerPositionEnum position_enum, Team team) {
         this.age = age;
         this.id = id;
         this.name = name;
@@ -60,12 +60,12 @@ public class Player {
     public boolean equals(Object o) {
         if (!(o instanceof Player)) return false;
         Player player = (Player) o;
-        return getId() == player.getId() && getAge() == player.getAge() && Objects.equals(getName(), player.getName()) && Objects.equals(getPosition_enum(), player.getPosition_enum()) && Objects.equals(getTeam(), player.getTeam());
+        return getId() == player.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getAge(), getPosition_enum(), getTeam());
+        return Objects.hashCode(getId());
     }
 
     public  String getTeamName(){

@@ -9,7 +9,7 @@ public class Team {
     private ContinentEnum continnent_enum;
     private List<Player> players;
 
-    public Team(ContinentEnum continnent_enum, int id, String name, List<Player> players) {
+    public Team( int id, String name,ContinentEnum continnent_enum, List<Player> players) {
         this.continnent_enum = continnent_enum;
         this.id = id;
         this.name = name;
@@ -52,14 +52,15 @@ public class Team {
     public boolean equals(Object o) {
         if (!(o instanceof Team)) return false;
         Team team = (Team) o;
-        return getId() == team.getId() && Objects.equals(getName(), team.getName()) && getContinnent_enum() == team.getContinnent_enum() && Objects.equals(getPlayers(), team.getPlayers());
+        return getId() == team.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getContinnent_enum(), getPlayers());
+        return Objects.hashCode(getId());
     }
-     public Integer getPlayersCount(){
+
+    public Integer getPlayersCount(){
         return 0;
      }
 }

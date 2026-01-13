@@ -19,3 +19,7 @@ CREATE TABLE PLAYER(
     position position_enum NOT NULL ,
     id_team int
 );
+
+---SELECT---
+SELECT TEAM.id,TEAM.name,TEAM.continent from  TEAM where id = ? ;
+SELECT PLAYER.id,PLAYER.name,PLAYER.age,PLAYER.position,PLAYER.id_team from PLAYER;
