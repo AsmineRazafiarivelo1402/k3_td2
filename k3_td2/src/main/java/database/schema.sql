@@ -27,3 +27,6 @@ SELECT PLAYER.id,PLAYER.name,PLAYER.age,PLAYER.position,PLAYER.id_team from PLAY
 --List<Player> findPlayers(int page, int size) permettant de récupérer la liste
 --des joueurs à travers une pagination.
 SELECT PLAYER.id,PLAYER.name,PLAYER.age,PLAYER.position,T.id, T.name, T.continent from PLAYER inner join TEAM T on PLAYER.id_team = T.id LIMIT = 5 OFFSET = 5 ;
+
+
+

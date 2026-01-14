@@ -96,4 +96,75 @@ public class DataRetriever {
         }
         return listPlayers;
     }
+
+public void createPlayers(List<Player> newPlayers) {
+    String playerSql = "SELECT id, name, age, position, id_team FROM PLAYER";
+    String insertPlayer = "INSERT INTO PLAYER (id, name, age, position, id_team) VALUES (?, ?, ?, ?::position_enum, ?)";
+
+
+    Connection connexion = null;
+
+    try {
+        connexion = DriverManager.getConnection(
+                dbConnection.getJdbcURL(),
+                dbConnection.getUsername(),
+                dbConnection.getPassword()
+        );
+        connexion.setAutoCommit(false);
+
+        // 1️⃣ Préparer statements
+        PreparedStatement psPlayer = connexion.prepareStatement(playerSql);
+        PreparedStatement psInsert = connexion.prepareStatement(insertPlayer);
+
+        // 2️⃣ Vérifier les doublons
+        ResultSet rsPlayer = psPlayer.executeQuery();
+        while (rsPlayer.next()) {
+            int existingId = rsPlayer.getInt("id");
+            for (Player player : newPlayers) {
+                if (player.getId() == existingId) {
+                    throw new RuntimeException(
+                            "Le joueur '" + player.getName() + "' existe déjà dans la base"
+                    );
+                }
+            }
+        }
+
+        // 3️⃣ Insérer tous les joueurs (batch)
+        for (Player player : newPlayers) {
+            psInsert.setInt(1, player.getId());
+            psInsert.setString(2, player.getName());
+            psInsert.setInt(3, player.getAge());
+            psInsert.setObject(4, player.getPosition_enum(), java.sql.Types.OTHER);
+            psInsert.setInt(5, player.getTeam().getId());
+            psInsert.addBatch();
+        }
+
+        psInsert.executeBatch();
+        connexion.commit();
+        System.out.println("Tous les joueurs ont été insérés avec succès !");
+
+    } catch (RuntimeException e) {
+        // rollback si exception unchecked
+        if (connexion != null) {
+            try {
+                connexion.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        System.out.println("Insertion annulée : " + e.getMessage());
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    } finally {
+        if (connexion != null) {
+            try {
+                connexion.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+}
+
+
 }
